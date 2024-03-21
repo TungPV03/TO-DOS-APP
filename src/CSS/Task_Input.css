@@ -1,0 +1,55 @@
+.todo-container{
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    width: 70%;
+    position: relative;
+}
+
+.task-input-container{
+    display: flex;
+    justify-content: center;
+    margin-top: 30px;
+    width: 100%;
+    box-shadow: 0 0 5px #212121;
+    border-radius: 10px;
+}
+
+.text-input{
+    padding: 15px 15px 15px 0;
+    flex: 1 1;
+    border: none;
+    outline: none;
+    margin: 10px 10px 10px 0;
+    font-size: 2rem;
+}
+
+.task-input-container:focus-within{
+    border-color: red;
+    box-shadow: 0 0 4px 1px red;
+}
+
+.check-all{
+    border: 1px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+}
+
+.check-all i{
+    font-size: 2.5rem;
+    padding: 20px 10px;
+    transition: 0.2s;
+    color: #ababab;
+}
+
+.hidden{
+    visibility: hidden;
+}
+
+.all-done{
+    color: #0D9276 !important;
+}
+

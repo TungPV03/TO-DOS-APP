@@ -1,0 +1,103 @@
+.todo-item p{
+    flex: 1 1;
+    margin-left: 5px;
+}
+
+.todo-item input{
+    width: 25px;
+    height: 25px;
+    margin: 10px 0 10px 10px;
+}
+
+.todo-item p input{
+    width: 100%;
+    outline: none;
+    border: none;
+    font-size: 2rem;
+    margin: 0;
+    padding: 0;
+    background-color: white;
+}
+
+.check-box-container{
+    position: absolute;
+    top : 30px;
+    display: flex;
+}
+
+.check-box-container input{
+    display: none;
+}
+
+.check-box-container span i{
+    font-size: 30px;
+    padding: 18px 12px;
+}
+
+.completed{
+    text-decoration: line-through;
+    color: #949494;
+}
+
+.todo-item{
+    display: flex;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.todo-item:not(:last-child){
+    border-bottom: 1px solid #949494;
+}
+
+.task{
+    padding: 10px 2px;
+}
+
+.del-btn{
+    border: none;
+    border-radius: 3px;
+    margin-right: 10px;
+    display: flex;
+    background-color: white;
+}
+
+.del-btn i{
+    padding: 5px;
+    font-size: 2rem;
+}
+
+.del-btn:hover{
+    background-color: #dbdbdb;
+}
+
+.del-btn:active{
+    background-color: #949494;
+}
+
+.checkbox{
+    display: none;
+}
+
+.check-btn{
+    display: flex;
+    width: 25px;
+    height: 25px;
+    justify-content: center;
+    align-items: center;
+    margin-left: 10px;
+    border: 1px solid #dbdbdb;
+    border-radius: 50%;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.check-btn i{
+    font-size: 1.5rem;
+    color: #dbdbdb;
+    cursor: pointer;
+}
+
+.checkbox:checked + .check-btn,.checkbox:checked + .check-btn i{
+    color: #0D9276;
+    border-color: #0D9276;
+}

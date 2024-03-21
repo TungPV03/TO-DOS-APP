@@ -1,0 +1,16 @@
+.header-text{
+    text-align: center;
+    font-size: 5rem;
+    padding: 10px;
+}
+
+.all-container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* *{
+    background-color: #fbfbfb;
+    color: #212121;
+} */

@@ -1,0 +1,4 @@
+.to-do-item-container.dark{
+    background-color: var(--input-background-dark);
+    box-shadow: 0 0 3px var(--box-shadow-dark);
+}

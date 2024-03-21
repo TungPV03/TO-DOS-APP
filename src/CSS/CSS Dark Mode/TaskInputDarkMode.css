@@ -1,0 +1,15 @@
+.task-input-container.dark{
+    box-shadow: 0 0 5px var(--box-shadow-dark);
+    background-color: var(--input-background-dark);
+}
+
+.task-input-container.dark:focus-within{
+    border-color: #aabbff;
+    box-shadow: 0 0 4px 2px #aabbff;
+}
+
+.text-input.dark{
+    background-color: var(--input-background-dark);
+    caret-color: var(--color-dark);
+    color: var(--color-dark);
+}

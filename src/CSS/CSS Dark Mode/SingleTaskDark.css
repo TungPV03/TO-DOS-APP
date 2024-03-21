@@ -1,0 +1,23 @@
+.todo-item.dark .del-btn{
+    background-color: var(--input-background-dark);
+    color: #bababa;
+}
+
+.todo-item.dark .del-btn:hover{
+    background-color: var(--box-shadow-dark);
+    color: var(--color-dark);
+}
+
+.todo-item.dark .del-btn:active{
+    background-color: #aabbff;
+    color: var(--color-dark);
+}
+
+.todo-item.dark:not(:last-child){
+    border-bottom: 1px solid var(--box-shadow-dark);
+}
+
+.todo-item.dark p input{
+    background-color: var(--input-background-dark);
+    color: var(--color-dark);
+}

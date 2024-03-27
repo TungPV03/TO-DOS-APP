@@ -1,6 +1,5 @@
 import React, { PureComponent } from "react";
 import '../CSS/MenuFeature.css'
-import PageList from "./PageList";
 
 class MenuFeature extends PureComponent{
     render(){
@@ -14,13 +13,6 @@ class MenuFeature extends PureComponent{
                 <span className="menu-item item-left">
                     {itemLeft} items left
                 </span>
-                {/* <div className="menu-item page-list">
-                    <PageList
-                        tasks={currentFilterTasks}
-                        handleSelectPageNumber={handleSelectPageNumber}
-                        currentPage={currentPage}
-                    />
-                </div> */}
                 <div className="menu-item filter-btn-wrapper">
                     <div className="menu-btn">
                         <input 

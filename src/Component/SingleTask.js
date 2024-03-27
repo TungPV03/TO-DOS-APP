@@ -30,7 +30,6 @@ class SingleTask extends PureComponent {
                     </label>
                 </div>
                 <p className={done ? 'task completed' : 'task'}
-                    // onDoubleClick={this.handleDoubleClick}
                     onDoubleClick={this.handleDoubleClick}
                 >
                     {task.content}

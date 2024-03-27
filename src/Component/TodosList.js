@@ -16,7 +16,7 @@ class TodosList extends PureComponent {
     }
 
     componentDidUpdate(prevProps){
-        if(prevProps.tasks.length !== this.props.tasks.length){
+        if(prevProps.tasks !== this.props.tasks){
             this.setState({displayTasks : this.props.tasks.slice(0,this.tasksPerPage)});
         }
     }
@@ -34,7 +34,6 @@ class TodosList extends PureComponent {
     handleScroll = () => {
         if (this.tasksContainerRef.current.clientHeight + this.tasksContainerRef.current.scrollTop
              >= this.tasksContainerRef.current.scrollHeight) {
-            console.log('handle scroll');
             this.loadMoreItem();
         }
     } 
@@ -42,7 +41,7 @@ class TodosList extends PureComponent {
     render() {
         const {displayTasks, currentPage} = this.state;
         const {isDarkMode} = this.context;
-        return (
+        return displayTasks.length > 0 && (
             <div ref={this.tasksContainerRef} className={"to-do-item-container" + (isDarkMode? DARK_CLASS_NAME : '')} onScroll={this.handleScroll}>
                 <span className="curernt-page">{currentPage}</span>
                 {displayTasks.map((task,index) =>(

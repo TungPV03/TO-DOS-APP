@@ -18,7 +18,6 @@ class App extends PureComponent {
             tasks : [],
             checkAllDone : false,
             filter : STATUS_FILTER.ALL,
-            currentPage : 1,
         };
         this.targetTask = 0;
         this.taskInputRef = React.createRef();
@@ -66,7 +65,7 @@ class App extends PureComponent {
     //handle menu feature
 
     handleClickSetFilter = (filter) => {
-        this.setState({filter, currentPage:1});
+        this.setState({filter});
     }
 
     handleClickClearCompleted = () => {
@@ -85,12 +84,6 @@ class App extends PureComponent {
             return {tasks};
         });
     }
-    //Select page number
-
-    // handleSelectPageNumber = (event) => {
-    //     const currentPage = event.target.value;
-    //     this.setState({currentPage});
-    // }
 
     //handle change content of task
     handleChangeTaskContent = (index, newContent) => {
@@ -107,7 +100,7 @@ class App extends PureComponent {
     //render
 
     render(){
-        const {tasks,checkAllDone,filter,currentPage} = this.state;
+        const {tasks,checkAllDone,filter} = this.state;
         let currentFilterTasks = [];
         if(filter === STATUS_FILTER.COMPLETED){
             currentFilterTasks = tasks.map((item,index) => ({
@@ -148,14 +141,12 @@ class App extends PureComponent {
                         handleClickClearCompleted = {this.handleClickClearCompleted}
                         handleSelectPageNumber = {this.handleSelectPageNumber}
                         filter = {filter}
-                        currentPage = {currentPage}
                         currentFilterTasks={currentFilterTasks}
                     />
                     <TodosList
                         tasks={currentFilterTasks}//tasks
                         handleClickCheckTask={this.handleClickCheckTask}
                         handleDeleteTask = {this.handleDeleteTask}
-                        currentPage = {currentPage}
                         handleFocusTaskInput = {this.handleFocusTaskInput}
                         hanldeTargetChangingTask = {this.hanldeTargetChangingTask}
                         handleChangePageOnScroll = {this.handleChangePageOnScroll}

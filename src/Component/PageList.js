@@ -1,10 +1,6 @@
-import { Component, PureComponent } from "react";
+import { PureComponent } from "react";
 
 class PageList extends PureComponent{
-    constructor(props){
-        super(props);
-    }
-
     pageList = (numberOfTasks) => {
         const numgerOfPage = numberOfTasks%5 === 0 ? numberOfTasks/5 : numberOfTasks/5 + 1; 
         const pageArr = [];

@@ -1,10 +1,10 @@
-import React, { Component, PureComponent } from "react";
+import React, { PureComponent } from "react";
 import TaskInput from './TaskInput';
 import TodosList from "./TodosList";
 import MenuFeature from "./MenuFeature";
 import '../CSS/App.css';
-import { ThemeContext, THEME } from "./theme-context";
 import ThemeButton from "./ThemeButton";
+import { ThemeContext, DARK_CLASS_NAME } from "./ThemeProvider";
 export const STATUS_FILTER = {
     ACTIVE: "active",
     COMPLETED: "completed",
@@ -14,39 +14,16 @@ export const STATUS_FILTER = {
 class App extends PureComponent {
     constructor(props){
         super(props);
-        this.toggleChangeTheme = () => {
-            this.setState(prevState => ({
-                theme : prevState.theme === THEME.light
-                        ? THEME.dark : THEME.light,
-                isDarkMode: !prevState.isDarkMode
-            }))
-        }
         this.state = {
             tasks : [],
             checkAllDone : false,
             filter : STATUS_FILTER.ALL,
             currentPage : 1,
-            theme : THEME.light,
-            isDarkMode: false,
-            toggleChangeTheme : this.toggleChangeTheme,
-            taskInputRef : null,
-            isEditing : false,
-            targetTask : 0,
         };
-    }
-    //lyfe circle
-
-    componentDidMount = () => {
-        const {theme} = this.state;
-        document.body.style.backgroundColor = theme.backgroundColor;
-        document.body.style.color = theme.color;
+        this.targetTask = 0;
+        this.taskInputRef = React.createRef();
     }
 
-    componentDidUpdate = () => {
-        const {theme} = this.state;
-        document.body.style.backgroundColor = theme.backgroundColor;
-        document.body.style.color = theme.color;
-    }
 
     //handle event of Task Input
     addNewTask = (newTask) => {
@@ -71,17 +48,10 @@ class App extends PureComponent {
         this.setState({ checkAllDone: allDone });
     }
 
-    takeTaskInputRef = (taskInputRef) => {
-        this.setState({taskInputRef});
-    }
-
     handleFocusTaskInput = (index) => {
-        const {taskInputRef,tasks} = this.state
-        if(taskInputRef){
-            taskInputRef.current.focus();
-            taskInputRef.current.value = tasks[index].content;
-            this.setState({isEditing: true});
-        }
+        this.taskInputRef.current.focusEditInput(index);
+        this.taskInputRef.current.isEditing = true;
+
     }
     //Handle events of todolist
     handleClickCheckTask = (index) => {
@@ -117,10 +87,10 @@ class App extends PureComponent {
     }
     //Select page number
 
-    handleSelectPageNumber = (event) => {
-        const currentPage = event.target.value;
-        this.setState({currentPage});
-    }
+    // handleSelectPageNumber = (event) => {
+    //     const currentPage = event.target.value;
+    //     this.setState({currentPage});
+    // }
 
     //handle change content of task
     handleChangeTaskContent = (index, newContent) => {
@@ -130,13 +100,9 @@ class App extends PureComponent {
             return {tasks};
         })
     }
-    handleChangeEditStatus = () =>{
-        this.setState({isEditing : false});
-    }
     hanldeTargetChangingTask = (index) =>{
-        this.setState({targetTask : index})
+        this.targetTask = index;
     }
-
 
     //render
 
@@ -158,15 +124,11 @@ class App extends PureComponent {
                 ...item, oldIndex : index
             }));
         }
-        const {theme,
-                isDarkMode,
-                toggleChangeTheme,
-                isEditing,
-                targetTask,
-                } = this.state;
+        const {isEditing} = this.state;
+        const {isDarkMode} = this.context;
         return (
-            <div className="app-container">
-                <ThemeContext.Provider value={{theme,isDarkMode,toggleChangeTheme}}>
+            <div className={"home-page" + (isDarkMode? DARK_CLASS_NAME : "")}>
+                <div className={"app-container"}>
                     <ThemeButton />
                     <h1>TODOS</h1>
                     <TaskInput
@@ -177,18 +139,8 @@ class App extends PureComponent {
                         takeTaskInputRef ={this.takeTaskInputRef}
                         isEditing = {isEditing}
                         handleChangeTaskContent = {this.handleChangeTaskContent}
-                        index= {targetTask}
-                        handleChangeEditStatus = {this.handleChangeEditStatus}
-                    />
-                    <TodosList
-                        tasks={currentFilterTasks}//tasks
-                        handleClickCheckTask={this.handleClickCheckTask}
-                        handleDeleteTask = {this.handleDeleteTask}
-                        currentPage = {currentPage}
-                        //handleChangeTaskContent = {this.handleChangeTaskContent}
-                        handleFocusTaskInput = {this.handleFocusTaskInput}
-                        handleChangeEditStatus = {this.handleChangeEditStatus}
-                        hanldeTargetChangingTask = {this.hanldeTargetChangingTask}
+                        index= {this.targetTask}
+                        ref={this.taskInputRef}
                     />
                     <MenuFeature
                         tasks={tasks}
@@ -199,10 +151,21 @@ class App extends PureComponent {
                         currentPage = {currentPage}
                         currentFilterTasks={currentFilterTasks}
                     />
-                </ThemeContext.Provider>
+                    <TodosList
+                        tasks={currentFilterTasks}//tasks
+                        handleClickCheckTask={this.handleClickCheckTask}
+                        handleDeleteTask = {this.handleDeleteTask}
+                        currentPage = {currentPage}
+                        handleFocusTaskInput = {this.handleFocusTaskInput}
+                        hanldeTargetChangingTask = {this.hanldeTargetChangingTask}
+                        handleChangePageOnScroll = {this.handleChangePageOnScroll}
+                    />
+                </div>
             </div>
         )
     }
 }
+
+App.contextType = ThemeContext;
 
 export default App;

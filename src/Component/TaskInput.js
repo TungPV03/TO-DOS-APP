@@ -1,8 +1,7 @@
-import React, { Component, PureComponent } from 'react';
+import React, { PureComponent } from 'react';
 import '../CSS/Task_Input.css'
 import '../CSS/CSS Dark Mode/TaskInputDarkMode.css'
-import { ThemeContext } from './theme-context';
-import { DARK_CLASS_NAME } from './theme-context';
+import { ThemeContext, DARK_CLASS_NAME } from './ThemeProvider';
 
 class TaskInput extends PureComponent{
     constructor(props){
@@ -10,21 +9,25 @@ class TaskInput extends PureComponent{
         this.state = {
             value : '',
         }
+        this.isEditing = false;
         this.textInputRef = React.createRef();
     }
 
-    componentDidMount = () => {
-        this.props.takeTaskInputRef(this.textInputRef);
+    focusEditInput = (index) => {
+        const {tasks} = this.props;
+        this.textInputRef.current.focus();
+        this.textInputRef.current.value = tasks[index].content;
     }
 
     handleChange = (event) =>{
         this.setState({value : event.target.value});
     }
+
     onKeyDown = (event) => {
         const {value} = this.state;
-        const {handleChangeTaskContent,index,handleChangeEditStatus, isEditing} = this.props;
+        const {handleChangeTaskContent,index} = this.props;
         if(event.keyCode === 13 && value !==''){
-            if(!isEditing){
+            if(!this.isEditing){
                 this.textInputRef.current.value = '';
                 this.setState({value : ''});
                 this.props.addNewTask({
@@ -34,7 +37,8 @@ class TaskInput extends PureComponent{
             }
             else{
                 handleChangeTaskContent(index, value);
-                handleChangeEditStatus();
+                // handleChangeEditStatus();
+                this.isEditing = false;
                 this.textInputRef.current.value = '';
                 this.setState({value: ''});
             }
@@ -42,8 +46,7 @@ class TaskInput extends PureComponent{
     }
 
     handleOnBlur = () => {
-        const {handleChangeEditStatus} = this.props;
-        handleChangeEditStatus();
+        this.isEditing = false;
         this.textInputRef.current.value = '';
         this.setState({
             value: '',
@@ -52,7 +55,6 @@ class TaskInput extends PureComponent{
 
     render(){
         //console.log('render component taskinput');
-        const {value} = this.state;
         const {tasks,handleClickCheckAllDone,checkAllDone} = this.props;
         const {isDarkMode} = this.context;
         return(

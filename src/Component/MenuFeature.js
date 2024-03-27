@@ -1,32 +1,26 @@
-import React, { Component, PureComponent } from "react";
+import React, { PureComponent } from "react";
 import '../CSS/MenuFeature.css'
 import PageList from "./PageList";
 
-class MenuFeature extends Component{
-    constructor(props){
-        super(props);
-    }
-
+class MenuFeature extends PureComponent{
     render(){
         const {handleClickSetFilter,
                 handleClickClearCompleted,
-                tasks,
-                handleSelectPageNumber,
-                currentFilterTasks,
-                currentPage} = this.props;
+                tasks
+                } = this.props;
         const itemLeft = tasks.filter(item => item.done === false).length;
         return tasks.length > 0 &&(
             <div className="menu">
                 <span className="menu-item item-left">
                     {itemLeft} items left
                 </span>
-                <div className="menu-item page-list">
+                {/* <div className="menu-item page-list">
                     <PageList
                         tasks={currentFilterTasks}
                         handleSelectPageNumber={handleSelectPageNumber}
                         currentPage={currentPage}
                     />
-                </div>
+                </div> */}
                 <div className="menu-item filter-btn-wrapper">
                     <div className="menu-btn">
                         <input 

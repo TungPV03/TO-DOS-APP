@@ -1,32 +1,54 @@
-import React, { Component, PureComponent } from "react";
+import React, { PureComponent } from "react";
 import '../CSS/Todos_List.css';
 import '../CSS/CSS Dark Mode/TodosListDark.css'
 import SingleTask from "./SingleTask";
-import { DARK_CLASS_NAME, ThemeContext } from "./theme-context";
+import { DARK_CLASS_NAME, ThemeContext } from "./ThemeProvider";
 
 class TodosList extends PureComponent {
-    constructor(props) {
+    constructor(props){
         super(props);
+        this.state = {
+            displayTasks : [],
+            loadMore: true
+        };
+        this.tasksPerPage = 7;
+        this.tasksContainerRef = React.createRef();
     }
 
-    tasksOfCurrentPage(tasks,currentPage){
-        const firstTaskOfPage = (currentPage - 1)*5;
-        const lastTaskOfPage = currentPage * 5 - 1;
-        const currentTasks = tasks.slice(firstTaskOfPage,lastTaskOfPage + 1);
-        return currentTasks;
+    componentDidUpdate(prevProps){
+        if(prevProps.tasks.length !== this.props.tasks.length){
+            this.setState({displayTasks : this.props.tasks.slice(0,this.tasksPerPage)});
+        }
     }
 
+    loadMoreItem = () => {
+        const {tasks} = this.props;
+        const {displayTasks} = this.state;
+        if(displayTasks.length < tasks.length){
+            const loadedTasks = [...displayTasks,...tasks.slice(displayTasks.length,displayTasks.length + this.tasksPerPage)];
+            this.setState({displayTasks : loadedTasks});
+        }
+    }
+    
+    
+    handleScroll = () => {
+        if (this.tasksContainerRef.current.clientHeight + this.tasksContainerRef.current.scrollTop
+             >= this.tasksContainerRef.current.scrollHeight) {
+            console.log('handle scroll');
+            this.loadMoreItem();
+        }
+    } 
+     
     render() {
-        const {tasks,currentPage} = this.props;
-        const currentTasks = this.tasksOfCurrentPage(tasks,currentPage);
+        const {displayTasks, currentPage} = this.state;
         const {isDarkMode} = this.context;
-        if(tasks.length === 0) return;
         return (
-            <div className={"to-do-item-container" + (isDarkMode? DARK_CLASS_NAME : '')}>
-                {currentTasks.map((task,index) =>(
+            <div ref={this.tasksContainerRef} className={"to-do-item-container" + (isDarkMode? DARK_CLASS_NAME : '')} onScroll={this.handleScroll}>
+                <span className="curernt-page">{currentPage}</span>
+                {displayTasks.map((task,index) =>(
                         <SingleTask
                             done={task.done} 
-                            key={task.content + index}
+                            key={task.content + "-" + index}
                             task={task} index={task.oldIndex}
                             {...this.props}                 
                         />

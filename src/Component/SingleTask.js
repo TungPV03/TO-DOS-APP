@@ -1,13 +1,9 @@
 import React, { PureComponent } from "react";
 import '../CSS/SingleTask.css'
 import '../CSS/CSS Dark Mode/SingleTaskDark.css'
-import { DARK_CLASS_NAME, ThemeContext } from "./theme-context";
+import { ThemeContext, DARK_CLASS_NAME } from "./ThemeProvider";
 
 class SingleTask extends PureComponent {
-    constructor(props) {
-        super(props);
-    }
-
     handleDoubleClick = () => {
         const {
                 index,

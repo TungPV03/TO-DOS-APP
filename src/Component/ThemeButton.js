@@ -1,11 +1,8 @@
 import { PureComponent } from "react";
 import "../CSS/ThemeButton.css"
-import { ThemeContext } from "./theme-context";
+import { ThemeContext } from "./ThemeProvider";
 
 class ThemeButton extends PureComponent{
-    constructor(props){
-        super(props);
-    }
 
     render(){
         return(

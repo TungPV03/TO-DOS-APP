@@ -78,7 +78,7 @@ class App extends PureComponent {
             const tasks = [...prevState.tasks];
             tasks.splice(index,1);
             return {tasks};
-        }, () => alert("Sẽ thay xoá công việc !"));
+        }, () => alert("Sẽ xoá công việc !"));
     }
 
     //handle change content of task

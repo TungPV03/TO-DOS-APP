@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
 import TaskInput from './TaskInput';
-import TodosList from "./TodosList";
+import ScrollableComponent from "./TodosList";
 import MenuFeature from "./MenuFeature";
 import '../CSS/App.css';
 import ThemeButton from "./ThemeButton";
@@ -10,19 +10,15 @@ export const STATUS_FILTER = {
     COMPLETED: "completed",
     ALL: 'all'
 }
-
 class App extends PureComponent {
     constructor(props){
         super(props);
         this.state = {
             tasks : [],
-            checkAllDone : false,
             filter : STATUS_FILTER.ALL,
+            checkAllDone : false
         };
-        this.targetTask = 0;
-        this.taskInputRef = React.createRef();
     }
-
 
     //handle event of Task Input
     addNewTask = (newTask) => {
@@ -47,19 +43,15 @@ class App extends PureComponent {
         this.setState({ checkAllDone: allDone });
     }
 
-    handleFocusTaskInput = (index) => {
-        this.taskInputRef.current.focusEditInput(index);
-        this.taskInputRef.current.isEditing = true;
-
-    }
     //Handle events of todolist
     handleClickCheckTask = (index) => {
-        this.setState(prevState => {
+        this.setState(
+            prevState => {
             const tasks = [...prevState.tasks];
             const {content, done} = tasks[index];
             tasks[index] = {content, done : !done};
             return {tasks};
-        }, () => this.checkStatusTasks());
+        }, () => this.checkStatusTasks()); 
     }
 
     //handle menu feature
@@ -72,6 +64,11 @@ class App extends PureComponent {
         this.setState(prevState => {
             const tasks = prevState.tasks.filter((item) => !item.done);
             return { tasks };
+        }, () => {
+            if(this.state.tasks.length === 0){
+                this.setState({filter : STATUS_FILTER.ALL});
+            }
+            alert("Sẽ xoá toàn bộ công việc đã hoàn tất!");
         });
     }
 
@@ -80,9 +77,8 @@ class App extends PureComponent {
         this.setState(prevState => {
             const tasks = [...prevState.tasks];
             tasks.splice(index,1);
-            //console.log('tasks after delete: ', tasks);
             return {tasks};
-        });
+        }, () => alert("Sẽ thay xoá công việc !"));
     }
 
     //handle change content of task
@@ -91,34 +87,29 @@ class App extends PureComponent {
             const tasks =[...prevState.tasks];
             tasks[index].content = newContent;
             return {tasks};
-        })
-    }
-    hanldeTargetChangingTask = (index) =>{
-        this.targetTask = index;
+        }, () => alert("Sẽ thay đổi nội dung công việc !"))
     }
 
-    //render
-
-    render(){
-        const {tasks,checkAllDone,filter} = this.state;
-        let currentFilterTasks = [];
+    filterTasksBaseOnFilterStatus = (tasks, filter) => {
         if(filter === STATUS_FILTER.COMPLETED){
-            currentFilterTasks = tasks.map((item,index) => ({
+            return tasks.map((item,index) => ({
                 ...item, oldIndex : index
             })).filter((item) => item.done);
         }
         else if(filter === STATUS_FILTER.ACTIVE){
-            currentFilterTasks = tasks.map((item,index) => ({
+            return tasks.map((item,index) => ({
                 ...item, oldIndex : index
             })).filter((item) => !item.done);
         }
-        else {
-            currentFilterTasks = tasks.map((item,index) => ({
-                ...item, oldIndex : index
-            }));
-        }
-        const {isEditing} = this.state;
+        return tasks.map((item,index) => ({
+            ...item, oldIndex : index
+        }));
+    }
+
+    render(){
+        const {tasks,filter,checkAllDone} = this.state;
         const {isDarkMode} = this.context;
+        const tasksOnFilter = this.filterTasksBaseOnFilterStatus(tasks,filter);
         return (
             <div className={"home-page" + (isDarkMode? DARK_CLASS_NAME : "")}>
                 <div className={"app-container"}>
@@ -129,27 +120,18 @@ class App extends PureComponent {
                         addNewTask={this.addNewTask}
                         handleClickCheckAllDone={this.handleClickCheckAllDone}
                         checkAllDone={checkAllDone}
-                        takeTaskInputRef ={this.takeTaskInputRef}
-                        isEditing = {isEditing}
+                    />
+                    <ScrollableComponent
+                        tasks={tasksOnFilter}
+                        handleClickCheckTask={this.handleClickCheckTask}
+                        handleDeleteTask = {this.handleDeleteTask}
                         handleChangeTaskContent = {this.handleChangeTaskContent}
-                        index= {this.targetTask}
-                        ref={this.taskInputRef}
                     />
                     <MenuFeature
                         tasks={tasks}
                         handleClickSetFilter={this.handleClickSetFilter}
                         handleClickClearCompleted = {this.handleClickClearCompleted}
-                        handleSelectPageNumber = {this.handleSelectPageNumber}
                         filter = {filter}
-                        currentFilterTasks={currentFilterTasks}
-                    />
-                    <TodosList
-                        tasks={currentFilterTasks}//tasks
-                        handleClickCheckTask={this.handleClickCheckTask}
-                        handleDeleteTask = {this.handleDeleteTask}
-                        handleFocusTaskInput = {this.handleFocusTaskInput}
-                        hanldeTargetChangingTask = {this.hanldeTargetChangingTask}
-                        handleChangePageOnScroll = {this.handleChangePageOnScroll}
                     />
                 </div>
             </div>

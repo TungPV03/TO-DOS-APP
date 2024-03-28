@@ -6,56 +6,22 @@ import { ThemeContext, DARK_CLASS_NAME } from './ThemeProvider';
 class TaskInput extends PureComponent{
     constructor(props){
         super(props);
-        this.state = {
-            value : '',
-        }
-        this.isEditing = false;
         this.textInputRef = React.createRef();
     }
-
-    focusEditInput = (index) => {
-        const {tasks} = this.props;
-        this.textInputRef.current.focus();
-        this.textInputRef.current.value = tasks[index].content;
-    }
-
-    handleChange = (event) =>{
-        this.setState({value : event.target.value});
-    }
-
+    
     onKeyDown = (event) => {
-        const {value} = this.state;
-        const {handleChangeTaskContent,index} = this.props;
+        const value = this.textInputRef.current.value;
         if(event.keyCode === 13 && value !==''){
-            if(!this.isEditing){
-                this.textInputRef.current.value = '';
-                this.setState({value : ''});
-                this.props.addNewTask({
-                    content : value,
-                    done :false,
-                })
-            }
-            else{
-                handleChangeTaskContent(index, value);
-                // handleChangeEditStatus();
-                this.isEditing = false;
-                this.textInputRef.current.value = '';
-                this.setState({value: ''});
-            }
+            this.textInputRef.current.value = '';
+            this.props.addNewTask({
+                content : value,
+                done :false,
+            });
         }
-    }
-
-    handleOnBlur = () => {
-        this.isEditing = false;
-        this.textInputRef.current.value = '';
-        this.setState({
-            value: '',
-        })
     }
 
     render(){
-        //console.log('render component taskinput');
-        const {tasks,handleClickCheckAllDone,checkAllDone} = this.props;
+        const {tasks,handleClickCheckAllDone,checkAllDone} = this.props; 
         const {isDarkMode} = this.context;
         return(
             <div className='todo-container'>

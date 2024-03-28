@@ -51,6 +51,8 @@
 
 .task{
     padding: 10px 2px;
+    display: flex;
+    align-items: center;
 }
 
 .del-btn{
@@ -67,11 +69,11 @@
 }
 
 .del-btn:hover{
-    background-color: #dbdbdb;
+    background-color: #FF6969;
 }
 
 .del-btn:active{
-    background-color: #949494;
+    background-color: #D80032;
 }
 
 .checkbox{
@@ -100,4 +102,28 @@
 .checkbox:checked + .check-btn,.checkbox:checked + .check-btn i{
     color: #0D9276;
     border-color: #0D9276;
+}
+
+.change-content-btn{
+    display: flex;
+    padding: 7.5px 5px;
+    border: none;
+    background-color: white;
+    border-radius: 3px;
+}
+
+.change-content-btn:hover{
+    background-color: #97E7E1;
+}
+
+.change-content-btn:active{
+    background-color: #6AD4DD;
+}
+
+.change-content-btn i{
+    font-size: 1.5rem;
+}
+
+.task span {
+    margin-right: 10px;
 }

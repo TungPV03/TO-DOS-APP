@@ -4,14 +4,36 @@ import '../CSS/CSS Dark Mode/SingleTaskDark.css'
 import { ThemeContext, DARK_CLASS_NAME } from "./ThemeProvider";
 
 class SingleTask extends PureComponent {
-    handleDoubleClick = () => {
-        const {
-                index,
-                handleFocusTaskInput,
-                hanldeTargetChangingTask} = this.props;
-        handleFocusTaskInput(index);
-        hanldeTargetChangingTask(index);
+    constructor(props){
+        super(props);
+        this.state = {isEditing : false}
+        this.changeContentInputRef = React.createRef();
     }
+    
+    handleChangeTask = () => {
+       this.setState({isEditing : true},
+        () => this.focusTask())
+    }
+
+    focusTask = () => {
+        const {task} = this.props;
+        this.changeContentInputRef.current.focus();
+        this.changeContentInputRef.current.value = task.content;
+    }
+
+    handleOnKeyDown = (event) => {
+        const {index,handleChangeTaskContent} = this.props;
+        const value = this.changeContentInputRef.current.value;
+        if(event.keyCode === 13 && value !==''){
+            handleChangeTaskContent(index, value);
+            this.setState({isEditing : false})
+        }
+    }
+
+    handleOnBlur = () => {
+        this.setState({isEditing : false});
+    }
+
     render() {
         const { task, index, handleClickCheckTask, handleDeleteTask, done } = this.props;
         const {isDarkMode} = this.context;
@@ -29,11 +51,23 @@ class SingleTask extends PureComponent {
                         <i className="fa-solid fa-check"></i>
                     </label>
                 </div>
-                <p className={done ? 'task completed' : 'task'}
-                    onDoubleClick={this.handleDoubleClick}
-                >
-                    {task.content}
+                <p className={done ? 'task completed' : 'task'}>
+                    <span>{"No." + (index+1)}</span>
+                    {this.state.isEditing ? 
+                    <input type="text"
+                        className="change-task-input"
+                        ref={this.changeContentInputRef}
+                        onKeyDown={this.handleOnKeyDown}
+                        onBlur={this.handleOnBlur}
+                    />
+                    : task.content}
                 </p>
+                <button 
+                    className={"change-content-btn" + (isDarkMode? DARK_CLASS_NAME : "")}
+                    onClick={this.handleChangeTask}
+                >
+                    <i className="fa-solid fa-rotate-right"></i>
+                </button>
                 <button className="del-btn" onClick={() => handleDeleteTask(index)}>
                     <i className="fa-solid fa-xmark"></i>
                 </button>

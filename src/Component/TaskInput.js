@@ -2,13 +2,14 @@ import React, { PureComponent } from 'react';
 import '../CSS/Task_Input.css'
 import '../CSS/CSS Dark Mode/TaskInputDarkMode.css'
 import { ThemeContext, DARK_CLASS_NAME } from './ThemeProvider';
+import PropTypes from 'prop-types';
 
 class TaskInput extends PureComponent{
     constructor(props){
         super(props);
         this.textInputRef = React.createRef();
     }
-    
+
     onKeyDown = (event) => {
         const value = this.textInputRef.current.value;
         if(event.keyCode === 13 && value !==''){
@@ -47,5 +48,16 @@ class TaskInput extends PureComponent{
 }
 
 TaskInput.contextType=ThemeContext;
+TaskInput.propTypes = {
+    tasks : PropTypes.array,
+    checkAllDone: PropTypes.bool,
+    handleClickCheckAllDone: PropTypes.func,
+    addNewTask: PropTypes.func
+}
+
+TaskInput.defaultProps = {
+    tasks : [],
+    checkAllDone : false
+}
 
 export default TaskInput;

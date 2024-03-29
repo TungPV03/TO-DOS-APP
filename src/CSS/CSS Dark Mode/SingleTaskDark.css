@@ -28,6 +28,6 @@
 }
 
 .todo-item.dark p input{
-    background-color: var(--input-background-dark);
+    background-color: var(--box-shadow-dark);
     color: var(--color-dark);
 }

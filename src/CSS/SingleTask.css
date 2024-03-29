@@ -15,8 +15,9 @@
     border: none;
     font-size: 2rem;
     margin: 0;
-    padding: 0;
-    background-color: white;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #97E7E1;
 }
 
 .check-box-container{
@@ -125,5 +126,8 @@
 }
 
 .task span {
+    font-size: 1rem;
     margin-right: 10px;
+    align-self: flex-end;
+    padding-bottom: 3px;
 }

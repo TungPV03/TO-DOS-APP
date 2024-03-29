@@ -15,7 +15,7 @@ export default function ehanceScrollComponent(WrappedComponent){
 
         handleScroll = () => {
             if(this.scrollContainer.current.scrollTop + this.scrollContainer.current.clientHeight 
-                >= this.scrollContainer.current.scrollHeight * 98/100)
+                >= this.scrollContainer.current.scrollHeight - 20)
             {
                 this.wrappedComponentRef.current.loadMoreItem();
             }

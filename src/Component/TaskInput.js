@@ -1,53 +1,45 @@
-import React, { PureComponent } from 'react';
+import React, { useContext, useRef } from 'react';
 import '../CSS/Task_Input.css'
 import '../CSS/CSS Dark Mode/TaskInputDarkMode.css'
 import { ThemeContext, DARK_CLASS_NAME } from './ThemeProvider';
 import PropTypes from 'prop-types';
 
-class TaskInput extends PureComponent{
-    constructor(props){
-        super(props);
-        this.textInputRef = React.createRef();
-    }
+export default function TaskInput (props){
+    const {tasks,handleClickCheckAllDone,checkAllDone} = props; 
+    const {isDarkMode} = useContext(ThemeContext);
+    const textInputRef = useRef();
 
-    onKeyDown = (event) => {
-        const value = this.textInputRef.current.value;
+    const onKeyDown = (event) => {
+        const value = textInputRef.current.value;
         if(event.keyCode === 13 && value !==''){
-            this.textInputRef.current.value = '';
-            this.props.addNewTask({
+            textInputRef.current.value = '';
+            props.addNewTask({
                 content : value,
                 done :false,
             });
         }
     }
 
-    render(){
-        const {tasks,handleClickCheckAllDone,checkAllDone} = this.props; 
-        const {isDarkMode} = this.context;
-        return(
-            <div className='todo-container'>
-                <div className={ 'task-input-container' + (isDarkMode ? DARK_CLASS_NAME : '')}>
-                    <span 
-                        className={tasks.length > 0 ? 'check-all' : 'check-all hidden'}
-                        onClick={handleClickCheckAllDone}>
-                        <i className={checkAllDone ? "fa-solid fa-caret-up all-done" : "fa-solid fa-caret-down"}></i>
-                    </span>
-                    <input
-                        className={'text-input' + (isDarkMode? DARK_CLASS_NAME : '')}
-                        type='text'
-                        onChange={this.handleChange}
-                        placeholder='Please enter what you need to do'
-                        onKeyDown={this.onKeyDown}
-                        onBlur={this.handleOnBlur}
-                        ref={this.textInputRef}
-                    />
-                </div>
+    return(
+        <div className='todo-container'>
+            <div className={ 'task-input-container' + (isDarkMode ? DARK_CLASS_NAME : '')}>
+                <span 
+                    className={tasks.length > 0 ? 'check-all' : 'check-all hidden'}
+                    onClick={handleClickCheckAllDone}>
+                    <i className={checkAllDone ? "fa-solid fa-caret-up all-done" : "fa-solid fa-caret-down"}></i>
+                </span>
+                <input
+                    className={'text-input' + (isDarkMode? DARK_CLASS_NAME : '')}
+                    type='text'
+                    placeholder='Please enter what you need to do'
+                    onKeyDown={onKeyDown}
+                    ref={textInputRef}
+                />
             </div>
-        )
-    }
+        </div>
+    )
 }
 
-TaskInput.contextType=ThemeContext;
 TaskInput.propTypes = {
     tasks : PropTypes.array,
     checkAllDone: PropTypes.bool,
@@ -59,5 +51,3 @@ TaskInput.defaultProps = {
     tasks : [],
     checkAllDone : false
 }
-
-export default TaskInput;

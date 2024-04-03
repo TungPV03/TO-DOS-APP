@@ -1,144 +1,95 @@
-import React, { PureComponent } from "react";
 import TaskInput from './TaskInput';
-import ScrollableComponent from "./TodosList";
+import TodosList from "./TodosList";
 import MenuFeature from "./MenuFeature";
 import '../CSS/App.css';
 import ThemeButton from "./ThemeButton";
 import { ThemeContext, DARK_CLASS_NAME } from "./ThemeProvider";
+import { useContext, useState } from 'react';
+
 export const STATUS_FILTER = {
     ACTIVE: "active",
     COMPLETED: "completed",
     ALL: 'all'
 }
-class App extends PureComponent {
-    constructor(props){
-        super(props);
-        this.state = {
-            tasks : [],
-            filter : STATUS_FILTER.ALL,
-            checkAllDone : false
-        };
-    }
 
-    //handle event of Task Input
-    addNewTask = (newTask) => {
-        this.setState(prevState => {
-            return {tasks : [newTask,...prevState.tasks]};
-        }, () => this.checkStatusTasks());
-    }
+export default function App () {
+    const [tasks, setTasks] = useState([]);
+    const [filter,setFilter] = useState(STATUS_FILTER.ALL);
+    const [checkAllDone, setAllDone] = useState(false);
+    const {isDarkMode} = useContext(ThemeContext)
 
-    handleClickCheckAllDone = () => {
-        this.setState(prevState => {
-            const checkAllDone = !prevState.checkAllDone;
-            const tasks = [...prevState.tasks].map((item) => {
-                item.done = checkAllDone;
-                return item;
-            })
-            return {tasks, checkAllDone};
+    const addNewTask = (newTask) => {
+        setTasks(prevState => {
+            return [newTask,...prevState];
         });
+        setAllDone(false);
     }
 
-    checkStatusTasks = () => {
-        const allDone = this.state.tasks.every(task => task.done);
-        this.setState({ checkAllDone: allDone });
-    }
-
-    //Handle events of todolist
-    handleClickCheckTask = (index) => {
-        this.setState(
-            prevState => {
-            const tasks = [...prevState.tasks];
-            const {content, done} = tasks[index];
-            tasks[index] = {content, done : !done};
-            return {tasks};
-        }, () => this.checkStatusTasks()); 
-    }
-
-    //handle menu feature
-
-    handleClickSetFilter = (filter) => {
-        this.setState({filter});
-    }
-
-    handleClickClearCompleted = () => {
-        this.setState(prevState => {
-            const tasks = prevState.tasks.filter((item) => !item.done);
-            return { tasks };
-        }, () => {
-            if(this.state.tasks.length === 0){
-                this.setState({filter : STATUS_FILTER.ALL});
-            }
-            alert("Sẽ xoá toàn bộ công việc đã hoàn tất!");
-        });
-    }
-
-    //delete task
-    handleDeleteTask = (index) => {
-        this.setState(prevState => {
-            const tasks = [...prevState.tasks];
-            tasks.splice(index,1);
-            return {tasks};
-        }, () => alert("Sẽ xoá công việc !"));
-    }
-
-    //handle change content of task
-    handleChangeTaskContent = (index, newContent) => {
-        this.setState(prevState => {
-            const tasks =[...prevState.tasks];
-            tasks[index].content = newContent;
-            return {tasks};
-        }, () => alert("Sẽ thay đổi nội dung công việc !"))
-    }
-
-    filterTasksBaseOnFilterStatus = (tasks, filter) => {
-        if(filter === STATUS_FILTER.COMPLETED){
-            return tasks.map((item,index) => ({
-                ...item, oldIndex : index
-            })).filter((item) => item.done);
-        }
-        else if(filter === STATUS_FILTER.ACTIVE){
-            return tasks.map((item,index) => ({
-                ...item, oldIndex : index
-            })).filter((item) => !item.done);
-        }
-        return tasks.map((item,index) => ({
-            ...item, oldIndex : index
+    const handleClickCheckAllDone = () => {
+        const updatedTasks = tasks.map(task => ({
+            ...task,
+            done : ! checkAllDone,
         }));
+        setTasks(updatedTasks);
+        setAllDone(prevAllDone => !prevAllDone);
     }
 
-    render(){
-        const {tasks,filter,checkAllDone} = this.state;
-        const {isDarkMode} = this.context;
-        const tasksOnFilter = this.filterTasksBaseOnFilterStatus(tasks,filter);
-        return (
-            <div className={"home-page" + (isDarkMode? DARK_CLASS_NAME : "")}>
-                <div className={"app-container"}>
-                    <ThemeButton />
-                    <h1>TODOS</h1>
-                    <TaskInput
-                        tasks={tasks}
-                        addNewTask={this.addNewTask}
-                        handleClickCheckAllDone={this.handleClickCheckAllDone}
-                        checkAllDone={checkAllDone}
-                    />
-                    <ScrollableComponent
-                        tasks={tasksOnFilter}
-                        handleClickCheckTask={this.handleClickCheckTask}
-                        handleDeleteTask = {this.handleDeleteTask}
-                        handleChangeTaskContent = {this.handleChangeTaskContent}
-                    />
-                    <MenuFeature
-                        tasks={tasks}
-                        handleClickSetFilter={this.handleClickSetFilter}
-                        handleClickClearCompleted = {this.handleClickClearCompleted}
-                        filter = {filter}
-                    />
-                </div>
+    const checkStatusTasks = () => {
+        setAllDone(tasks.every(task => task.done));
+    }
+
+    const handleClickCheckTask = (index) => {
+        const updatedTasks = [...tasks];
+        updatedTasks[index].done = !updatedTasks[index].done;
+        setTasks(updatedTasks);
+        checkStatusTasks();
+    }
+
+    const handleClickSetFilter = (filter) => {
+        setFilter(filter);
+    }
+
+    const handleClickClearCompleted = () => {
+        setTasks(tasks.filter(task => !task.done));
+    }
+
+    const handleDeleteTask = (index) => {
+        const updatedTasks = [...tasks];
+        updatedTasks.splice(index,1);
+        setTasks(updatedTasks);
+    }
+
+    const handleChangeTaskContent = (index, newContent) => {
+        const updatedTasks = tasks;
+        updatedTasks[index].content = newContent;
+        setTasks(updatedTasks);
+    }
+
+    return (
+        <div className={"home-page" + (isDarkMode? DARK_CLASS_NAME : "")}>
+            <div className={"app-container"}>
+                <ThemeButton />
+                <h1>TODOS</h1>
+                <TaskInput
+                    tasks={tasks}
+                    addNewTask={addNewTask}
+                    handleClickCheckAllDone={handleClickCheckAllDone}
+                    checkAllDone={checkAllDone}
+                />
+                <TodosList
+                    filter = {filter}
+                    tasks={tasks}
+                    handleClickCheckTask={handleClickCheckTask}
+                    handleDeleteTask = {handleDeleteTask}
+                    handleChangeTaskContent = {handleChangeTaskContent}
+                />
+                <MenuFeature
+                    tasks={tasks}
+                    handleClickSetFilter={handleClickSetFilter}
+                    handleClickClearCompleted = {handleClickClearCompleted}
+                    filter = {filter}
+                />
             </div>
-        )
-    }
+        </div>
+    )
 }
-
-App.contextType = ThemeContext;
-
-export default App;

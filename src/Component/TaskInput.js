@@ -1,4 +1,4 @@
-import React, { forwardRef, useContext } from 'react';
+import React, { forwardRef, useContext, useImperativeHandle, useRef } from 'react';
 import '../CSS/Task_Input.css'
 import '../CSS/CSS Dark Mode/TaskInputDarkMode.css'
 import { ThemeContext, DARK_CLASS_NAME } from './ThemeProvider';
@@ -6,33 +6,51 @@ import { useDispatch, useSelector } from 'react-redux';
 
 
 const TaskInput = forwardRef( function TaskInput (props, ref){
-    const {
-        edittingId,
-        clearEdittingStatus,
-        isEditting} = props; 
     const {isDarkMode} = useContext(ThemeContext);
     const todos = useSelector(state => state.todos);
     const areAllCompleted = todos.every(todo => todo.completed);
     const dispatch = useDispatch();
+    const inputRef = useRef(null);
+    let edditingStatus = false;
+    let edittingId = 0;
+
+
+    const setEdittingStatus = () => {
+        edditingStatus = true;
+    }
+
+    const focusTaskInput = (content, id) => {
+        inputRef.current.focus();
+        inputRef.current.value = content;
+        edittingId = id;
+    }
     debugger;
 
+    useImperativeHandle(ref, () => ({
+        setEdittingStatus: setEdittingStatus,
+        focusTaskInput: focusTaskInput
+    }));
+
     const onKeyDown = (event) => {
-        const value = ref.current.value;
+        const value = inputRef.current.value;
+        console.log(edittingId, edditingStatus);
         if(event.keyCode === 13 && value !==''){
-            if(!isEditting){
+            debugger;
+            if(!edditingStatus){
                 dispatch({type: "todos/todoAdded", payload: value});
             }
             else{
                 dispatch({type: "todos/todoContentChanged", payload: {id: edittingId, content: value}});
-                clearEdittingStatus();
+                edditingStatus = false;
             }
-            ref.current.value = "";
+            inputRef.current.value = "";
         }
     }
+    debugger;
 
     const handleBlur = () => {
-        clearEdittingStatus();
-        ref.current.value = "";
+        edditingStatus = false;
+        inputRef.current.value = "";
     }
 
     return(
@@ -49,7 +67,7 @@ const TaskInput = forwardRef( function TaskInput (props, ref){
                     placeholder='Please enter what you need to do'
                     onKeyDown={onKeyDown}
                     onBlur={handleBlur}
-                    ref={ref}
+                    ref={inputRef}
                 />
             </div>
         </div>

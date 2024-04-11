@@ -27,7 +27,6 @@ export default function TodosList (props){
         getEdittingTodoId
     } = props;
     const todosId = useSelector(state => selectedToDoIdOnFilterStatus(state.filter,state.todos), shallowEqual);
-    debugger;    
     useEffect(() => {
         const reversedTodosId = [...todosId].reverse();
         setDisplayTodosId(reversedTodosId.slice(0, tasksPerPage));

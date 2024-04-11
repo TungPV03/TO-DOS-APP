@@ -4,7 +4,7 @@ import MenuFeature from "./MenuFeature";
 import '../CSS/App.css';
 import ThemeButton from "./ThemeButton";
 import { ThemeContext, DARK_CLASS_NAME } from "./ThemeProvider";
-import { useContext, useRef, useState } from 'react';
+import { useContext, useRef } from 'react';
 
 export const STATUS_FILTER = {
     ACTIVE: "active",
@@ -14,23 +14,17 @@ export const STATUS_FILTER = {
 
 export default function App () {
     const {isDarkMode} = useContext(ThemeContext);
-    const [isEditing, setEditting] = useState(false);
     const taskInputRef = useRef(null);
-    const edittingId  = useRef(0);
 
-    const focusTaskInput = (content) => {
-        taskInputRef.current.focus();
-        taskInputRef.current.value = content;
-        setEditting(true);
-    }
-
-    const getEdittingTodoId= (id) => {
-        edittingId.current = id;
+    const focusTaskInput = (content, id) => {
+        taskInputRef.current.focusTaskInput(content, id);
+        taskInputRef.current.setEdittingStatus(true);
     }
 
     const clearEdittingStatus = () => {
-        setEditting(false);
+        taskInputRef.current.setEdittingStatus(false);
     }
+
 
     return (
         <div className={"home-page" + (isDarkMode? DARK_CLASS_NAME : "")}>
@@ -39,16 +33,12 @@ export default function App () {
                 <h1>TODOS</h1>
                 <TaskInput
                     ref={taskInputRef}
-                    isEditting = {isEditing}
-                    edittingId = {edittingId.current}
                     clearEdittingStatus = {clearEdittingStatus}
                 />
                 <TodosList
-                    getEdittingTodoId = {getEdittingTodoId}
                     focusTaskInput = {focusTaskInput}
                 />
-                <MenuFeature
-                />
+                <MenuFeature/>
             </div>
         </div>
     )

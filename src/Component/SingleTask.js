@@ -7,7 +7,6 @@ import { useDispatch, useSelector } from "react-redux";
 export default function SingleTask(props){
     const { 
         id,
-        getEdittingTodoId,
         focusTaskInput
         } = props;
     const {isDarkMode} = useContext(ThemeContext);
@@ -16,8 +15,7 @@ export default function SingleTask(props){
     const dispatch = useDispatch();
 
     const handleEdittingTask = () => {
-        getEdittingTodoId(id);
-        focusTaskInput(todo.content);
+        focusTaskInput(todo.content, id);
     }
 
     return todo && (

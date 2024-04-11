@@ -6,7 +6,6 @@ import { STATUS_FILTER } from "./App";
 export default function MenuFeature (){
     const todos = useSelector(state => state.todos);
     const dispatch = useDispatch();
-    debugger;
     const itemLeft = todos.filter(todo => !todo.completed);
     return itemLeft &&(
         <div className="menu">

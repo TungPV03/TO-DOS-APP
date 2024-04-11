@@ -4,41 +4,57 @@ import '../CSS/CSS Dark Mode/TodosListDark.css'
 import SingleTask from "./SingleTask";
 import { DARK_CLASS_NAME, ThemeContext } from "./ThemeProvider";
 import { useScrollable } from "./ScrollableComponent";
+import { shallowEqual, useSelector } from "react-redux";
 import { STATUS_FILTER } from "./App";
 
+const selectedToDoIdOnFilterStatus = (filter, todos) => {
+    switch (filter.status) {
+        case STATUS_FILTER.ACTIVE:
+            return todos.filter(todo => !todo.completed).map(todo => todo.id);
+        case STATUS_FILTER.COMPLETED:
+            return todos.filter(todo => todo.completed).map(todo => todo.id);
+        default:
+            return todos.map(todo => todo.id);
+    }
+}
+
 export default function TodosList (props){
-    const [displayTasks, setDisplayTasks] = useState([]);
+    const [displayTodosId, setDisplayTodosId] = useState([]);
     const tasksPerPage = 7;
     const {isDarkMode} = useContext(ThemeContext);
-    const {tasks,filter} = props;
-    
+    const {
+        focusTaskInput,
+        getEdittingTodoId
+    } = props;
+    const todosId = useSelector(state => selectedToDoIdOnFilterStatus(state.filter,state.todos), shallowEqual);
+    debugger;    
     useEffect(() => {
-        setDisplayTasks(tasks.slice(0, tasksPerPage));
-    }, [tasks]);
+        const reversedTodosId = [...todosId].reverse();
+        setDisplayTodosId(reversedTodosId.slice(0, tasksPerPage));
+    }, [todosId]);
 
     const loadMoreItem = () => {
-        if(displayTasks.length < tasks.length){
-            const loadedTasks = [...displayTasks,...tasks.slice(displayTasks.length,displayTasks.length + tasksPerPage)];
-            setDisplayTasks(loadedTasks);
+        if (displayTodosId.length < todosId.length) {
+            const reversedTodosId = [...todosId].reverse();
+            const displayLength = displayTodosId.length;
+            const loadedTasks = [...displayTodosId, ...reversedTodosId.slice(displayLength, displayLength + tasksPerPage)];
+            setDisplayTodosId(loadedTasks);
         }
     }
 
     const {setRef, handleScroll} = useScrollable(loadMoreItem);
      
-    return displayTasks && displayTasks.length > 0 && (
+    return displayTodosId && (
         <div ref={setRef} 
-            className={"to-do-item-container" + (isDarkMode? DARK_CLASS_NAME : '')} 
+            className={"to-do-item-container" + (isDarkMode ? DARK_CLASS_NAME : '')} 
             onScroll={handleScroll}>
-            {displayTasks.map((task, index) =>(
-                (filter === STATUS_FILTER.ALL || 
-                (filter === STATUS_FILTER.ACTIVE && !task.done) ||
-                (filter === STATUS_FILTER.COMPLETED && task.done)) &&
-                    <SingleTask
-                        done={task.done} 
-                        key={task.content + "-" + index}
-                        task={task} index={index}
-                        {...props}                 
-                    />
+            {displayTodosId.map((todoId) => (
+                <SingleTask
+                    key={todoId}
+                    id={todoId}
+                    focusTaskInput={focusTaskInput} 
+                    getEdittingTodoId={getEdittingTodoId}           
+                />
             ))}
         </div>
     )

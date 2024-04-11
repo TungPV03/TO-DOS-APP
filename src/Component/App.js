@@ -4,7 +4,7 @@ import MenuFeature from "./MenuFeature";
 import '../CSS/App.css';
 import ThemeButton from "./ThemeButton";
 import { ThemeContext, DARK_CLASS_NAME } from "./ThemeProvider";
-import { useContext, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 
 export const STATUS_FILTER = {
     ACTIVE: "active",
@@ -13,56 +13,23 @@ export const STATUS_FILTER = {
 }
 
 export default function App () {
-    const [tasks, setTasks] = useState([]);
-    const [filter,setFilter] = useState(STATUS_FILTER.ALL);
-    const [checkAllDone, setAllDone] = useState(false);
-    const {isDarkMode} = useContext(ThemeContext)
+    const {isDarkMode} = useContext(ThemeContext);
+    const [isEditing, setEditting] = useState(false);
+    const taskInputRef = useRef(null);
+    const edittingId  = useRef(0);
 
-    const addNewTask = (newTask) => {
-        setTasks(prevState => {
-            return [newTask,...prevState];
-        });
-        setAllDone(false);
+    const focusTaskInput = (content) => {
+        taskInputRef.current.focus();
+        taskInputRef.current.value = content;
+        setEditting(true);
     }
 
-    const handleClickCheckAllDone = () => {
-        const updatedTasks = tasks.map(task => ({
-            ...task,
-            done : ! checkAllDone,
-        }));
-        setTasks(updatedTasks);
-        setAllDone(prevAllDone => !prevAllDone);
+    const getEdittingTodoId= (id) => {
+        edittingId.current = id;
     }
 
-    const checkStatusTasks = () => {
-        setAllDone(tasks.every(task => task.done));
-    }
-
-    const handleClickCheckTask = (index) => {
-        const updatedTasks = [...tasks];
-        updatedTasks[index].done = !updatedTasks[index].done;
-        setTasks(updatedTasks);
-        checkStatusTasks();
-    }
-
-    const handleClickSetFilter = (filter) => {
-        setFilter(filter);
-    }
-
-    const handleClickClearCompleted = () => {
-        setTasks(tasks.filter(task => !task.done));
-    }
-
-    const handleDeleteTask = (index) => {
-        const updatedTasks = [...tasks];
-        updatedTasks.splice(index,1);
-        setTasks(updatedTasks);
-    }
-
-    const handleChangeTaskContent = (index, newContent) => {
-        const updatedTasks = tasks;
-        updatedTasks[index].content = newContent;
-        setTasks(updatedTasks);
+    const clearEdittingStatus = () => {
+        setEditting(false);
     }
 
     return (
@@ -71,23 +38,16 @@ export default function App () {
                 <ThemeButton />
                 <h1>TODOS</h1>
                 <TaskInput
-                    tasks={tasks}
-                    addNewTask={addNewTask}
-                    handleClickCheckAllDone={handleClickCheckAllDone}
-                    checkAllDone={checkAllDone}
+                    ref={taskInputRef}
+                    isEditting = {isEditing}
+                    edittingId = {edittingId.current}
+                    clearEdittingStatus = {clearEdittingStatus}
                 />
                 <TodosList
-                    filter = {filter}
-                    tasks={tasks}
-                    handleClickCheckTask={handleClickCheckTask}
-                    handleDeleteTask = {handleDeleteTask}
-                    handleChangeTaskContent = {handleChangeTaskContent}
+                    getEdittingTodoId = {getEdittingTodoId}
+                    focusTaskInput = {focusTaskInput}
                 />
                 <MenuFeature
-                    tasks={tasks}
-                    handleClickSetFilter={handleClickSetFilter}
-                    handleClickClearCompleted = {handleClickClearCompleted}
-                    filter = {filter}
                 />
             </div>
         </div>

@@ -1,11 +1,13 @@
 import React from "react";
 import '../CSS/MenuFeature.css'
+import { useDispatch, useSelector } from "react-redux";
+import { STATUS_FILTER } from "./App";
 
-export default function MenuFeature (props){
-    const {handleClickSetFilter,
-        handleClickClearCompleted,
-        tasks} = props;
-    const itemLeft = tasks.filter(task => !task.done);
+export default function MenuFeature (){
+    const todos = useSelector(state => state.todos);
+    const dispatch = useDispatch();
+    debugger;
+    const itemLeft = todos.filter(todo => !todo.completed);
     return itemLeft &&(
         <div className="menu">
             <span className="menu-item item-left">
@@ -16,7 +18,7 @@ export default function MenuFeature (props){
                     <input 
                         id="select-all" type="radio"
                         name="select-type-show"
-                        onClick={() => handleClickSetFilter('all')}
+                        onClick={() => dispatch({type: "filter/filterChanged", payload: STATUS_FILTER.ALL})}
                         defaultChecked
                     />
                     <label htmlFor="select-all">All</label>
@@ -25,7 +27,7 @@ export default function MenuFeature (props){
                     <input
                         id="select-active"
                         type="radio" name="select-type-show"
-                        onClick={() => handleClickSetFilter('active')}
+                        onClick={() => dispatch({type: "filter/filterChanged", payload: STATUS_FILTER.ACTIVE})}
                     />
                     <label htmlFor="select-active">Active</label>
                 </div>
@@ -34,7 +36,7 @@ export default function MenuFeature (props){
                         id="select-completed"
                         type="radio"
                         name="select-type-show"
-                        onClick={() => handleClickSetFilter('completed')}
+                        onClick={() => dispatch({type: "filter/filterChanged", payload: STATUS_FILTER.COMPLETED})}
                     />
                     <label htmlFor="select-completed">Completed</label>
                     </div>
@@ -42,7 +44,7 @@ export default function MenuFeature (props){
                 <div className="menu-item btn-container">
                     <button
                         className="clear-completed-btn"
-                        onClick={handleClickClearCompleted}
+                        onClick={() => dispatch({type: "todos/todosCompletedCleared"})}
                     >Clear completed
                     </button>
                 </div>

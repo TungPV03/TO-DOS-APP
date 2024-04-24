@@ -6,6 +6,9 @@ import './index.css'
 import ThemeProvider from "./Component/ThemeProvider";
 import { Provider } from "react-redux";
 import store from './Redux/store';
+import api from "./API";
+
+store.dispatch(api.fetchTodos());
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const app = (<ThemeProvider>

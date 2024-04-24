@@ -1,8 +1,9 @@
-import React, {useContext } from "react";
+import React, {useContext} from "react";
 import '../CSS/SingleTask.css'
 import '../CSS/CSS Dark Mode/SingleTaskDark.css'
 import { ThemeContext, DARK_CLASS_NAME } from "./ThemeProvider";
 import { useDispatch, useSelector } from "react-redux";
+import api from "../API";
 
 export default function SingleTask(props){
     const { 
@@ -41,7 +42,7 @@ export default function SingleTask(props){
             >
                 <i className="fa-solid fa-rotate-right"></i>
             </button>
-            <button className="del-btn" onClick={() => dispatch({type:"todos/todoDeleted", payload: id})}>
+            <button className="del-btn" onClick={() => dispatch(api.deleteTodo(id))}>
                 <i className="fa-solid fa-xmark"></i>
             </button>
         </div>

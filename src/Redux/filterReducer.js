@@ -1,15 +1,15 @@
-const filterReducer = (state, action) => {
+import { produce } from "immer";
+
+const filterReducer = produce((draft, action) => {
     switch(action.type){
         case "filter/filterChanged": {
-            return {
-                ...state,
-                status: action.payload
-            };
+            draft.status = action.payload;
+            break;
         }
         default: {
-            return state;
+            break;
         }
     }
-}
+})
 
 export default filterReducer;

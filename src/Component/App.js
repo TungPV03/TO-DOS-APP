@@ -21,23 +21,13 @@ export default function App () {
         taskInputRef.current.setEdittingStatus(true);
     }
 
-    const clearEdittingStatus = () => {
-        taskInputRef.current.setEdittingStatus(false);
-    }
-
-
     return (
         <div className={"home-page" + (isDarkMode? DARK_CLASS_NAME : "")}>
             <div className={"app-container"}>
                 <ThemeButton />
                 <h1>TODOS</h1>
-                <TaskInput
-                    ref={taskInputRef}
-                    clearEdittingStatus = {clearEdittingStatus}
-                />
-                <TodosList
-                    focusTaskInput = {focusTaskInput}
-                />
+                <TaskInput ref={taskInputRef}/>
+                <TodosList focusTaskInput = {focusTaskInput}/>
                 <MenuFeature/>
             </div>
         </div>

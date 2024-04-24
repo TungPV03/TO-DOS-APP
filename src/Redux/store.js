@@ -2,6 +2,8 @@ import { STATUS_FILTER } from "../Component/App";
 import filterReducer from "./filterReducer";
 import todosReducer from "./todosReducer";
 import { createStore } from "redux";
+import { applyMiddleware } from "redux";
+import { thunk } from "redux-thunk";
 
 const rootReducer = (state, action) => {
     return{
@@ -12,16 +14,11 @@ const rootReducer = (state, action) => {
 
 const initialState = {
     todos: [
-        {
-            id: 1,
-            content: "Do something",
-            completed: false
-        }
     ],
     filter: {
         status: STATUS_FILTER.ALL
     }
 }
 
-const store = createStore(rootReducer, initialState);
+const store = createStore(rootReducer, initialState, applyMiddleware(thunk));
 export default store;

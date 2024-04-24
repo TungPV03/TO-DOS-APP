@@ -3,7 +3,7 @@ import '../CSS/Task_Input.css'
 import '../CSS/CSS Dark Mode/TaskInputDarkMode.css'
 import { ThemeContext, DARK_CLASS_NAME } from './ThemeProvider';
 import { useDispatch, useSelector } from 'react-redux';
-
+import api from '../API';
 
 const TaskInput = forwardRef( function TaskInput (props, ref){
     const {isDarkMode} = useContext(ThemeContext);
@@ -24,7 +24,6 @@ const TaskInput = forwardRef( function TaskInput (props, ref){
         inputRef.current.value = content;
         edittingId = id;
     }
-    debugger;
 
     useImperativeHandle(ref, () => ({
         setEdittingStatus: setEdittingStatus,
@@ -33,20 +32,18 @@ const TaskInput = forwardRef( function TaskInput (props, ref){
 
     const onKeyDown = (event) => {
         const value = inputRef.current.value;
-        console.log(edittingId, edditingStatus);
         if(event.keyCode === 13 && value !==''){
-            debugger;
             if(!edditingStatus){
-                dispatch({type: "todos/todoAdded", payload: value});
+                dispatch(api.postTodo(value));
             }
             else{
-                dispatch({type: "todos/todoContentChanged", payload: {id: edittingId, content: value}});
+                //dispatch({type: "todos/todoContentChanged", payload: {id: edittingId, content: value}});
+                dispatch(api.changeTodo({type: "todos/todoContentChanged", payload: {id: edittingId, content: value}}));
                 edditingStatus = false;
             }
             inputRef.current.value = "";
         }
     }
-    debugger;
 
     const handleBlur = () => {
         edditingStatus = false;

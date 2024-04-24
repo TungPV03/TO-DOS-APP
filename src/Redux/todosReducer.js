@@ -1,57 +1,44 @@
-function nextId(todos) {
-    const todosLength = todos.length;
-    if (todosLength === 0) {
-        return 0;
-    }
-    return todos[todosLength - 1].id + 1;
-}
+import { produce } from "immer";
 
-
-const todosReducer = (state, action) => {
+const todosReducer = produce((draft, action) => {
     switch (action.type){
         case "todos/todoAdded": {
-            return [
-                ...state,
-                {
-                    id: nextId(state),
-                    content: action.payload,
-                    completed: false 
-                }
-            ];
+            draft.push({
+                ...action.payload
+            });
+            break;
         }
         case "todos/todoDeleted": {
-            return state.filter(todo => todo.id !== action.payload);
+            return draft.filter(todo => todo.id !== action.payload);
         }
         case "todos/todoToggleCompleted": { 
-            return state.map(todo => {
-                if(todo.id === action.payload){
-                    return {...todo, completed: !todo.completed};
-                }
-                return todo;
-            })
+            const todo = draft.find(todo => todo.id === action.payload);
+            todo.completed = !todo.completed;
+            break;
         }
         case "todos/todoContentChanged": {
-            return state.map(todo => {
-                if(todo.id === action.payload.id){
-                    return {
-                        ...todo,
-                        content: action.payload.content
-                    };
-                }
-                return todo;
-            })
+            const todo = draft.find(todo => todo.id === action.payload.id);
+            todo.content = action.payload.content;
+            break;
         }
         case "todos/todosAllToggled": {
-            const completedAll = state.every(todo => todo.completed);
-            return state.map(todo => ({...todo, completed: !completedAll}));
+            const completedAll = draft.every(todo => todo.completed);
+            draft.forEach(todo => {
+                todo.completed = !completedAll;
+            });
+            break;
         }
         case "todos/todosCompletedCleared": {
-            return state.filter(todo => !todo.completed);
+            return draft.filter(todo => !todo.completed);
+        }
+        case 'todos/loadedTodos': {
+            draft.push(...action.payload);
+            break;
         }
         default: {
-            return state;
+            break;
         }
     } 
-}
+});
 
 export default todosReducer;
